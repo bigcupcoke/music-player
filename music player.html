@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>music player</title>
+        <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>
+        <style media="screen">
+        song {
+            display: block;
+            color: blue;
+            cursor: pointer;
+        }
+        .center {
+            text-align: center;
+        }
+        #id-input-slider {
+            width: 100%;
+        }
+        .duration-time {
+            display: inline-block;
+            float: right;
+        }
+        </style>
+        <script>
+            var log = function() {
+                console.log.apply(console, arguments)
+            }
+
+            var playerMode = 'loop'
+            var bindSwitch = function() {
+                var player = document.querySelector('#id-music-player')
+                $('song').on('click', function() {
+                    var self = $(event.target)
+                    var song = self.text()
+                    player.autoplay = !player.paused
+                    player.src = song + '.mp3'
+                    $('h1').text(song)
+                    log('clickok')
+                })
+            }
+
+            var playerSetTime = function(percent) {
+                var player = $('#id-music-player')[0]
+                var time = player.duration * percent
+                log('time', time)
+                player.currentTime = time
+            }
+
+            var bindTimeSlider = function() {
+                $('#id-input-slider').on('change', function() {
+                    var val = $(this).val()
+                    var percent = Number(val) / 100
+                    log(typeof val, val)
+                    playerSetTime(percent)
+                })
+            }
+
+            var setSlider = function(percent) {
+                $('#id-input-slider').val(percent * 100)
+            }
+
+            var bindAudioEnd = function() {
+                $('#id-music-player').on('ended', function() {
+                    log('ended audio')
+                    play(1)
+                })
+            }
+
+            var bindAudioChange = function() {
+                $('#id-music-player').on('timeupdate', function() {
+                    var percent = this.currentTime / this.duration
+                    setSlider(percent)
+                    var time = labelFromTime(this.currentTime)
+                    $('.current-time').text(time)
+                })
+            }
+
+            var labelFromTime = function(time) {
+                var minutes = Math.floor(time / 60)
+                var seconds = Math.floor(time % 60)
+                if (seconds < 10) {
+                    seconds = '0' + String(seconds)
+                }
+                time = `${minutes}:${seconds}`
+                return time
+            }
+
+            var bindAudioTime = function() {
+                var player = document.querySelector('#id-music-player')
+                $('#id-music-player').on('durationchange', function() {
+                    log('event',player.duration)
+                    var time = player.duration
+                    time = labelFromTime(time)
+                    $('.duration-time').text(time)
+                })
+            }
+
+            var bindAudioEvents = function() {
+                bindAudioEnd()
+                bindAudioChange()
+                bindAudioTime()
+            }
+
+            var prevSong = function() {
+                play(-1)
+            }
+
+            var nextSong = function() {
+                play(1)
+            }
+
+            var play = function(offset) {
+                var player = document.querySelector('#id-music-player')
+                var number = $('.play-list').data('songs')
+                var i = $('.play-list').data('index')
+                i = (i + offset + number) % number
+                $('.play-list').data('index', i)
+                var song =  $($('song')[i]).text()
+                $('h1').text(song)
+                song = $($('song')[i]).text() + '.mp3'
+                player.src = song
+            }
+
+            var playSong = function(self) {
+                var player = document.querySelector('#id-music-player')
+                player.play()
+                self.dataset.action = 'paused'
+                self.innerText = '暂停'
+            }
+
+            var pasuedSong = function(self) {
+                var player = document.querySelector('#id-music-player')
+                player.pause()
+                self.dataset.action = 'play'
+                self.innerText = '播放'
+            }
+
+            var modeList = function(self) {
+                endedUnbind()
+                $('#id-music-player').on('ended', function() {
+                    play(1)
+                    log('list')
+                })
+                self.dataset.action = 'list'
+                self.innerText = '列表'
+            }
+
+            var modeRandom = function(self) {
+                endedUnbind()
+                $('#id-music-player').on('ended', function() {
+                    var t = Math.floor(Math.random() * 10)
+                    play(t)
+                    log('random')
+                })
+                self.innerText = '随机'
+                self.dataset.action = 'random'
+            }
+
+            var endedUnbind = function() {
+                $('#id-music-player').unbind('ended')
+                log('unbind')
+            }
+
+            var modeLoop = function(self) {
+                endedUnbind()
+                $('#id-music-player').on('ended', function() {
+                    play(0)
+                    log('random')
+                })
+                self.dataset.action = 'loop'
+                self.innerText = '单曲'
+            }
+
+            var bindButtonEvents = function() {
+                $('.music-player-buttons').on('click', 'button', function() {
+                    var type = this.dataset.action
+                    log(type)
+                    var self = event.target
+                    var action = {
+                        prev: prevSong,
+                        next: nextSong,
+                        play: playSong,
+                        paused: pasuedSong,
+                        loop: modeList,
+                        list: modeRandom,
+                        random: modeLoop,
+                    }
+                    var act = action[type]
+                    act(self)
+                })
+            }
+
+            bindEvents = function() {
+                bindSwitch()
+                bindTimeSlider()
+                bindAudioEvents()
+                bindButtonEvents()
+            }
+
+            var __main = function() {
+                bindEvents()
+            }
+
+            $('document').ready(function() {
+                __main()
+            })
+        </script>
+    </head>
+    <body>
+        <div class="music-player">
+            <audio id="id-music-player"  autoplay=true >
+                <source src="时光 - 许巍.mp3">
+            </audio>
+            <div class="infromation-of-songs center">
+                <h1>时光 - 许巍</h1>
+                <singer>许巍</singer>
+            </div>
+            <div class="play-list-container center">
+                <div class="play-list" data-index='0' data-songs='3'>
+                    <song>时光 - 许巍</song>
+                    <song>曾经的你 - 许巍</song>
+                    <song>蓝莲花 - 许巍</song>
+                </div>
+            </div>
+            <div class="music-player-controls">
+                <input id="id-input-slider" type="range"  value="0" min="0" max="100">
+            </div>
+            <div class="palyer-time">
+                <time class="current-time">0:00</time>
+                <time class="duration-time">0:00</time>
+            </div>
+            <div class="music-player-buttons center">
+                <button data-action='list'>列表</button>
+                <button data-action='prev'>上一曲</button>
+                <button data-action='paused'>暂停</button>
+                <button data-action='next'>下一曲</button>
+            </div>
+        </div>
+    </body>
+</html>
