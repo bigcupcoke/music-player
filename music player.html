@@ -15,11 +15,130 @@
             text-align: center;
         }
         #id-input-slider {
-            width: 100%;
+            width: 72%;
+
         }
-        .duration-time {
-            display: inline-block;
-            float: right;
+        #id-input-slider::-webkit-slider-thumb:before,
+#id-input-slider::-webkit-slider-thumb:after
+{
+  position: absolute;
+  top: 3px;
+  width: 2000px;          /* 長度很長沒關係，因為剛剛有用 overflow:hidden 了 */
+  height: 4px;
+  content:"";
+  pointer-events: none;   /* 讓滑鼠可以點擊穿透偽元素，不然會點不到下面 */
+  transition:.2s;
+}
+
+#id-input-slider::-webkit-slider-thumb:before{
+  left: -1997px;
+  background: #f22;
+}
+#id-input-slider::-webkit-slider-thumb:after {
+  left: 10px;
+  background: #edc;
+}
+        .title-share {
+            position: absolute;
+            right: 5px;
+        }
+        .music-player-title {
+            text-align: center;
+            position: relative;
+            margin: 0px;
+            height: 60px;
+            border-bottom: solid 1.5px lightgray;
+        }
+        body {
+            margin: 0px;
+        }
+        .infromation-of-songs {
+
+        }
+        singer {
+            position: absolute;
+            top: 31px;
+            right: 135px;
+        }
+        name {
+            /* font-style: oblique; */
+            /* fill-rule: initial; */
+            /* font-variant: initial; */
+            font-family: fantasy;
+            font-weight: 800;
+            color: whitesmoke;
+            font-size: large;
+            /* margin: -1px; */
+            position: relative;
+            top: 4px;
+        }
+        #id-img-back {
+            transform: translate(0px, 0px) rotate(272deg) skew(0deg, 0deg) scale(1, 1);
+            height: 21px;
+            width: 28px;
+            position: absolute;
+            left: 5px;
+            top: 13px;
+        }
+        .small-icon {
+            height: 36px;
+            width: 36px;
+        }
+        .title-share {
+            position: absolute;
+            right: 5px;
+            top: 6px;
+        }
+        .music-player-background {
+            height: 100%;
+            width: 100%;
+            background-image: url(http://p4.music.126.net/SVJNKYtlB_n9I7p0017Ndw==/6635552674995921.jpg);
+            position: absolute;
+            z-index: -100;
+            background: black;
+        }
+        .music-player-animation {
+            position: relative;
+            overflow: hidden;
+            outline-color: red;
+            height: 354px;
+        }
+        img.animation-slider {
+            width: 80px;
+            top: 5px;
+            position: absolute;
+            top: -14px;
+            right: 58px;
+        }
+        .special-icon {
+            width: 70px;
+        }
+        .music-player-options {
+            text-align: center;
+            position: relative;
+            margin: -12px 0px
+        }
+        .music-player-spans {
+            position: ;
+            font-size: 33px;
+        }
+        .span-ways-list {
+            position: relative;
+            top: -17px;
+        }
+        .span-next-prev {
+            position: relative;
+            top: -10px;
+        }
+        time {
+            position: relative;
+            top: -5px;
+            font-size: 15px;
+            font-family: Arial, Helvetica, sans-serif;
+            color: white;
+        }
+        .none {
+            display: none;
         }
         </style>
         <script>
@@ -172,8 +291,8 @@
                 self.innerText = '单曲'
             }
 
-            var bindButtonEvents = function() {
-                $('.music-player-buttons').on('click', 'button', function() {
+            var bindspanEvents = function() {
+                $('.music-player-spans').on('click', 'span', function() {
                     var type = this.dataset.action
                     log(type)
                     var self = event.target
@@ -195,7 +314,7 @@
                 bindSwitch()
                 bindTimeSlider()
                 bindAudioEvents()
-                bindButtonEvents()
+                bindspanEvents()
             }
 
             var __main = function() {
@@ -212,29 +331,50 @@
             <audio id="id-music-player"  autoplay=true >
                 <source src="时光 - 许巍.mp3">
             </audio>
-            <div class="infromation-of-songs center">
-                <h1>时光 - 许巍</h1>
-                <singer>许巍</singer>
+            <div class="music-player-background">
+                <img src="" alt="" />
             </div>
-            <div class="play-list-container center">
-                <div class="play-list" data-index='0' data-songs='3'>
-                    <song>时光 - 许巍</song>
-                    <song>曾经的你 - 许巍</song>
-                    <song>蓝莲花 - 许巍</song>
+            <div class="music-player-container">
+                <div class="music-player-title">
+                    <span class="title-back"><img id="id-img-back" class="small-icon" src="images/back.png" alt="" /></span>
+                    <div class="infromation-of-songs center">
+                        <name>时光 - 许巍</name>
+                        <singer>许巍</singer>
+                    </div>
+                    <span class="title-share"><img class="small-icon" src="images/share.png" alt="" /></span>
                 </div>
-            </div>
-            <div class="music-player-controls">
-                <input id="id-input-slider" type="range"  value="0" min="0" max="100">
-            </div>
-            <div class="palyer-time">
-                <time class="current-time">0:00</time>
-                <time class="duration-time">0:00</time>
-            </div>
-            <div class="music-player-buttons center">
-                <button data-action='list'>列表</button>
-                <button data-action='prev'>上一曲</button>
-                <button data-action='paused'>暂停</button>
-                <button data-action='next'>下一曲</button>
+                <div class="music-player-animation">
+                    <img class="animation-slider" src="images/play_needle.png" alt="" />
+                    <!-- <img src="images/play_rdi_bg.png" alt="" />
+                    <img src="images/play_disc.png" alt="" /> -->
+                </div>
+                <div class="play-list-container none center">
+                    <div class="play-list" data-index='0' data-songs='3'>
+                        <song>时光 - 许巍</song>
+                        <song>曾经的你 - 许巍</song>
+                        <song>蓝莲花 - 许巍</song>
+                    </div>
+                </div>
+                <div class="music-player-footer">
+                    <div class="music-player-options">
+                        <span><img class="special-icon" src="images/argee.png" alt="" /></span>
+                        <span><img class="special-icon" src="images/download.png" alt="" /></span>
+                        <span><img class="special-icon" src="images/comments.png" alt="" /></span>
+                        <span><img class="special-icon" src="images/options.png" alt="" /></span>
+                    </div>
+                    <div class="music-player-controls center">
+                        <time class="current-time">0:00</time>
+                        <input id="id-input-slider" type="range"  value="0" min="0" max="100">
+                        <time class="duration-time">0:00</time>
+                    </div>
+                    <div class="music-player-spans center">
+                        <span class="span-ways-list" data-action='list'><img class="" src="images/play_icn_loop.png"></span>
+                        <span class="span-next-prev" data-action='prev'><img class="" src="images/play_btn_prev.png"></span>
+                        <span class="span-play-pasued" data-action='paused'><img class="big-icon" src="images/play_rdi_btn_pause.png"></span>
+                        <span class="span-next-prev" data-action='next'><img class="" src="images/play_btn_next.png"></span>
+                        <span class="span-ways-list" ><img class="" src="images/play_icn_src.png"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </body>
