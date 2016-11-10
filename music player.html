@@ -31,7 +31,8 @@
         }
         #id-input-slider {
             width: 72%;
-
+            position: relative;
+            top: -8px;
         }
         .animation-icon {
             width: 229px;
@@ -89,18 +90,23 @@
             top: 6px;
         }
         .music-player-background {
-            height: 100%;
-            width: 100%;
-            /*background-image: url(http://p4.music.126.net/SVJNKYtlB_n9I7p0017Ndw==/6635552674995921.jpg);*/
+            /* background: #a0a0a0 center; */
             position: absolute;
+            /* top: 0px; */
+            /* left: 0px; */
+            height: 110%;
+            width: 110%;
+            margin: -5%;
+            /* background-size: cover; */
+            background-image: url(http://p3.music.126.net/5NwnNh5qKl2F1GCVBxguRQ==/6641050232675986.jpg);
             z-index: -100;
-            background: #FF5722;
+            /* filter: url(blur.svg#blur); */
+            -webkit-filter: blur(20px) brightness(0.5);
         }
         .music-player-animation {
             position: relative;
             overflow: hidden;
-            outline-color: red;
-            height: 354px;
+            height: 327px;
         }
         .animation-neddle {
             width: 98px;
@@ -113,11 +119,6 @@
         }
         .special-icon {
             width: 70px;
-        }
-        .music-player-options {
-            text-align: center;
-            position: relative;
-            margin: -12px 0px
         }
         .music-player-imgs {
             position: ;
@@ -140,6 +141,15 @@
         }
         .none {
             display: none;
+        }
+        .music-player-controls {
+            position: relative;
+            top: -7px;
+        }
+        .music-player-options {
+            text-align: center;
+            position: relative;
+            margin: 5px 0px;
         }
         @keyframes disc-play {
             0% {
@@ -179,7 +189,22 @@
         .neddle-pause {
             animation: neddle-pause 0.3s 1 linear forwards;
         }
-
+        input[type="range"] {
+            -webkit-appearance: none;
+            border-radius: 2px;
+            width: 200px;
+            height: 3px;
+            background: lightgray;
+            box-shadow: inset #ebb 0 0 5px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+        }
         </style>
         <script>
             var log = function() {
@@ -320,7 +345,7 @@
                     log('list')
                 })
                 self.dataset.action = 'list'
-                self.innerText = '列表'
+                self.src = 'images/list.png'
             }
 
             var modeRandom = function(self) {
@@ -330,7 +355,7 @@
                     play(t)
                     log('random')
                 })
-                self.innerText = '随机'
+                self.src = 'images/random.png'
                 self.dataset.action = 'random'
             }
 
@@ -346,7 +371,7 @@
                     log('random')
                 })
                 self.dataset.action = 'loop'
-                self.innerText = '单曲'
+                self.src = 'images/loop.png'
             }
 
             var bindimgEvents = function() {
@@ -393,12 +418,12 @@
             </div>
             <div class="music-player-container">
                 <div class="music-player-title">
-                    <img class="title-back"><img id="id-img-back" class="small-icon" src="images/back.png" alt="" /></img>
+                    <span class="title-back"><img id="id-img-back" class="small-icon" src="images/back.png" alt="" /></span>
                     <div class="infromation-of-songs center">
                         <name>时光 - 许巍</name>
                         <singer>许巍</singer>
                     </div>
-                    <img class="title-share"><img class="small-icon" src="images/share.png" alt="" /></img>
+                    <span class="title-share"><img class="small-icon" src="images/share.png" alt="" /></span>
                 </div>
                 <div class="music-player-animation">
                     <img class="animation-neddle neddle-play" src="images/play_needle.png" alt="" />
@@ -407,7 +432,7 @@
                     </div>
                     <div class="music-player-animation-circle center">
                         <img class="animation-icon situation-center disc-img-play" src="images/play_disc.png" alt="" />
-                        <img class="song-pic situation-center disc-img-play" src="images/demo.jpg" alt="" />
+                        <img class="song-pic situation-center disc-img-play" src="http://p3.music.126.net/5NwnNh5qKl2F1GCVBxguRQ==/6641050232675986.jpg" alt="" />
                     </div>
                 </div>
                 <div class="play-list-container none center">
@@ -426,11 +451,11 @@
                     </div>
                     <div class="music-player-controls center">
                         <time class="current-time">0:00</time>
-                        <input id="id-input-slider" type="range"  value="0" min="0" max="100">
+                        <input id="id-input-slider" type="range"  step="0.5" value="0" min="0" max="100">
                         <time class="duration-time">0:00</time>
                     </div>
                     <div class="music-player-imgs center">
-                        <img class="img-ways-list" data-action='list' src="images/play_icn_loop.png">
+                        <img class="img-ways-list small-icon" data-action='list' src="images/list.png">
                         <img class="img-next-prev" data-action='prev' src="images/play_btn_prev.png">
                         <img class="img-play-pasued big-icon" data-action='paused' src="images/play_rdi_btn_pause.png">
                         <img class="img-next-prev" data-action='next' src="images/play_btn_next.png">
