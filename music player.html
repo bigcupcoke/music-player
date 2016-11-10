@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <title>music player</title>
         <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>
         <style media="screen">
@@ -11,6 +11,21 @@
             color: blue;
             cursor: pointer;
         }
+        .song-pic {
+            width: 153px;
+            z-index: -20;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%) translateY(-50%);
+        }
+            .situation-center {
+            top: 50%;
+            left: 50%;
+            position: absolute;
+            transform: translateY(-50%) translateX(-50%);
+        }
         .center {
             text-align: center;
         }
@@ -18,26 +33,13 @@
             width: 72%;
 
         }
-        #id-input-slider::-webkit-slider-thumb:before,
-#id-input-slider::-webkit-slider-thumb:after
-{
-  position: absolute;
-  top: 3px;
-  width: 2000px;          /* 長度很長沒關係，因為剛剛有用 overflow:hidden 了 */
-  height: 4px;
-  content:"";
-  pointer-events: none;   /* 讓滑鼠可以點擊穿透偽元素，不然會點不到下面 */
-  transition:.2s;
-}
-
-#id-input-slider::-webkit-slider-thumb:before{
-  left: -1997px;
-  background: #f22;
-}
-#id-input-slider::-webkit-slider-thumb:after {
-  left: 10px;
-  background: #edc;
-}
+        .animation-icon {
+            width: 229px;
+        }
+        .bottom-icon {
+            width: 324px;
+            z-index: -20;
+        }
         .title-share {
             position: absolute;
             right: 5px;
@@ -61,14 +63,11 @@
             right: 135px;
         }
         name {
-            /* font-style: oblique; */
-            /* fill-rule: initial; */
-            /* font-variant: initial; */
+
             font-family: fantasy;
             font-weight: 800;
             color: whitesmoke;
             font-size: large;
-            /* margin: -1px; */
             position: relative;
             top: 4px;
         }
@@ -92,10 +91,10 @@
         .music-player-background {
             height: 100%;
             width: 100%;
-            background-image: url(http://p4.music.126.net/SVJNKYtlB_n9I7p0017Ndw==/6635552674995921.jpg);
+            /*background-image: url(http://p4.music.126.net/SVJNKYtlB_n9I7p0017Ndw==/6635552674995921.jpg);*/
             position: absolute;
             z-index: -100;
-            background: black;
+            background: #FF5722;
         }
         .music-player-animation {
             position: relative;
@@ -103,12 +102,14 @@
             outline-color: red;
             height: 354px;
         }
-        img.animation-slider {
-            width: 80px;
-            top: 5px;
+        .animation-neddle {
+            width: 98px;
+            -webkit-transform-origin: 18px 18px;
             position: absolute;
-            top: -14px;
-            right: 58px;
+            top: -21px;
+            right: 25%;
+            z-index: 10;
+            transform: rotate(-30deg);
         }
         .special-icon {
             width: 70px;
@@ -118,15 +119,15 @@
             position: relative;
             margin: -12px 0px
         }
-        .music-player-spans {
+        .music-player-imgs {
             position: ;
             font-size: 33px;
         }
-        .span-ways-list {
+        .img-ways-list {
             position: relative;
             top: -17px;
         }
-        .span-next-prev {
+        .img-next-prev {
             position: relative;
             top: -10px;
         }
@@ -140,6 +141,45 @@
         .none {
             display: none;
         }
+        @keyframes disc-play {
+            0% {
+                transform: translateX(-50%) translateY(-50%)  rotate(0deg);
+            }
+            100% {
+                transform: translateX(-50%) translateY(-50%)  rotate(360deg);
+            }
+        }
+        .disc-img-play {
+            animation: disc-play 20s infinite  linear;
+            animation-play-state: running;
+        }
+        .disc-img-pasued {
+            animation: disc-play 20s infinite  linear;
+            animation-play-state: paused;
+        }
+        @keyframes neddle-play {
+            0% {
+                transform: rotate(-30deg);
+            }
+            100% {
+                transform: rotate(0deg);
+            }
+        }
+        @keyframes neddle-pause {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(-30deg);
+            }
+        }
+        .neddle-play {
+            animation: neddle-play 0.3s 1 linear forwards;
+        }
+        .neddle-pause {
+            animation: neddle-pause 0.3s 1 linear forwards;
+        }
+
         </style>
         <script>
             var log = function() {
@@ -243,16 +283,34 @@
 
             var playSong = function(self) {
                 var player = document.querySelector('#id-music-player')
+                log('playsong ', self.src)
                 player.play()
+                toggleAnimationClass('.animation-icon', 'disc-img-play', 'disc-img-pasued')
+                toggleAnimationClass('.song-pic', 'disc-img-play', 'disc-img-pasued')
                 self.dataset.action = 'paused'
-                self.innerText = '暂停'
+                self.src = 'images/play_rdi_btn_pause.png'
+                toggleAnimationClass('.animation-neddle','neddle-play', 'neddle-pause')
             }
 
             var pasuedSong = function(self) {
                 var player = document.querySelector('#id-music-player')
                 player.pause()
+                toggleAnimationClass('.animation-icon', 'disc-img-play', 'disc-img-pasued')
+                toggleAnimationClass('.song-pic', 'disc-img-play', 'disc-img-pasued')
                 self.dataset.action = 'play'
-                self.innerText = '播放'
+                self.src = 'images/play_rdi_btn_play.png'
+                toggleAnimationClass('.animation-neddle','neddle-play', 'neddle-pause')
+            }
+            // $('.animation-icon').classList.contains('disc-img-play')
+            var toggleAnimationClass = function(selector, cls1, cls2) {
+                var playBool = $(selector)[0].classList.contains(cls1)
+                if (playBool) {
+                    $(selector).removeClass(cls1)
+                    $(selector).addClass(cls2)
+                }else {
+                    $(selector).removeClass(cls2)
+                    $(selector).addClass(cls1)
+                }
             }
 
             var modeList = function(self) {
@@ -291,10 +349,9 @@
                 self.innerText = '单曲'
             }
 
-            var bindspanEvents = function() {
-                $('.music-player-spans').on('click', 'span', function() {
+            var bindimgEvents = function() {
+                $('.music-player-imgs').on('click', 'img', function() {
                     var type = this.dataset.action
-                    log(type)
                     var self = event.target
                     var action = {
                         prev: prevSong,
@@ -314,7 +371,7 @@
                 bindSwitch()
                 bindTimeSlider()
                 bindAudioEvents()
-                bindspanEvents()
+                bindimgEvents()
             }
 
             var __main = function() {
@@ -336,17 +393,22 @@
             </div>
             <div class="music-player-container">
                 <div class="music-player-title">
-                    <span class="title-back"><img id="id-img-back" class="small-icon" src="images/back.png" alt="" /></span>
+                    <img class="title-back"><img id="id-img-back" class="small-icon" src="images/back.png" alt="" /></img>
                     <div class="infromation-of-songs center">
                         <name>时光 - 许巍</name>
                         <singer>许巍</singer>
                     </div>
-                    <span class="title-share"><img class="small-icon" src="images/share.png" alt="" /></span>
+                    <img class="title-share"><img class="small-icon" src="images/share.png" alt="" /></img>
                 </div>
                 <div class="music-player-animation">
-                    <img class="animation-slider" src="images/play_needle.png" alt="" />
-                    <!-- <img src="images/play_rdi_bg.png" alt="" />
-                    <img src="images/play_disc.png" alt="" /> -->
+                    <img class="animation-neddle neddle-play" src="images/play_needle.png" alt="" />
+                    <div class="music-player-animation-bottom">
+                        <img class="bottom-icon  situation-center" src="images/play-bottom.png" alt="" />
+                    </div>
+                    <div class="music-player-animation-circle center">
+                        <img class="animation-icon situation-center disc-img-play" src="images/play_disc.png" alt="" />
+                        <img class="song-pic situation-center disc-img-play" src="images/demo.jpg" alt="" />
+                    </div>
                 </div>
                 <div class="play-list-container none center">
                     <div class="play-list" data-index='0' data-songs='3'>
@@ -357,22 +419,22 @@
                 </div>
                 <div class="music-player-footer">
                     <div class="music-player-options">
-                        <span><img class="special-icon" src="images/argee.png" alt="" /></span>
-                        <span><img class="special-icon" src="images/download.png" alt="" /></span>
-                        <span><img class="special-icon" src="images/comments.png" alt="" /></span>
-                        <span><img class="special-icon" src="images/options.png" alt="" /></span>
+                        <img><img class="special-icon" src="images/argee.png" alt="" /></img>
+                        <img><img class="special-icon" src="images/download.png" alt="" /></img>
+                        <img><img class="special-icon" src="images/comments.png" alt="" /></img>
+                        <img><img class="special-icon" src="images/options.png" alt="" /></img>
                     </div>
                     <div class="music-player-controls center">
                         <time class="current-time">0:00</time>
                         <input id="id-input-slider" type="range"  value="0" min="0" max="100">
                         <time class="duration-time">0:00</time>
                     </div>
-                    <div class="music-player-spans center">
-                        <span class="span-ways-list" data-action='list'><img class="" src="images/play_icn_loop.png"></span>
-                        <span class="span-next-prev" data-action='prev'><img class="" src="images/play_btn_prev.png"></span>
-                        <span class="span-play-pasued" data-action='paused'><img class="big-icon" src="images/play_rdi_btn_pause.png"></span>
-                        <span class="span-next-prev" data-action='next'><img class="" src="images/play_btn_next.png"></span>
-                        <span class="span-ways-list" ><img class="" src="images/play_icn_src.png"></span>
+                    <div class="music-player-imgs center">
+                        <img class="img-ways-list" data-action='list' src="images/play_icn_loop.png">
+                        <img class="img-next-prev" data-action='prev' src="images/play_btn_prev.png">
+                        <img class="img-play-pasued big-icon" data-action='paused' src="images/play_rdi_btn_pause.png">
+                        <img class="img-next-prev" data-action='next' src="images/play_btn_next.png">
+                        <img class="img-ways-list" src="images/play_icn_src.png">
                     </div>
                 </div>
             </div>
